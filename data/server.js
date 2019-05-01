@@ -52,11 +52,32 @@ server.get('/api/cohorts/:id', (req, res) => {
 server.post('/api/cohorts', (req, res) => {
     db('cohorts')
         .insert(req.body, 'id')
-        .then(cohort => {
-            res.status(200).json({ cohort, message: "The cohort successfully added!" })
+        .then(ids => { // Displays the entire object info of the new cohort being added
+            db('cohorts')
+                .where({ id: ids[0] })
+                .first()
+                .then(cohort => {
+                    res.status(200).json({ cohort, message: "The cohort successfully added!" })
+                })
+                .catch(err => {
+                    res.status(500).json({ err, message: "There was an error while adding the cohort." })
+                });
+        })
+});
+
+server.put('/api/cohorts/:id', (req, res) => {
+    db('cohorts')
+        .where({ id: req.params.id })
+        .update(req.body)
+        .then(updatedCohort => {
+            if (updatedCohort) {
+                res.status(200).json({ message: "The cohort was successfully updated!" });
+            } else {
+                res.status(404).json({ message: "The cohort with the specified ID does not exist." });
+            }
         })
         .catch(err => {
-            res.status(500).json({ err, message: "There was an error while adding the cohort." })
+            res.status(500).json({ err, message: "There was an error while updating the cohort." });
         });
 });
 
