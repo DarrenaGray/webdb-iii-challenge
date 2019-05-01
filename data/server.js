@@ -81,4 +81,20 @@ server.put('/api/cohorts/:id', (req, res) => {
         });
 });
 
+server.delete('/api/cohorts/:id', (req, res) => {
+    db('cohorts')
+        .where({ id: req.params.id })
+        .del(req.body)
+        .then(deletedCohort => {
+            if (deletedCohort) {
+                res.status(200).json({ message: "The cohort was successfully deleted!" });
+            } else {
+                res.status(404).json({ message: "The cohort with the specified ID does not exist." });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ err, message: "There was an error while deleting the cohort." });
+        });
+});
+
 module.exports = server;
