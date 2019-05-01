@@ -21,6 +21,8 @@ server.get('/', (req, res) => {
     res.send('Server is connected!')
 });
 
+// Cohorts
+
 server.get('/api/cohorts', (req, res) => {
     db('cohorts')
         .then(cohorts => {
@@ -47,5 +49,15 @@ server.get('/api/cohorts/:id', (req, res) => {
         });
 });
 
+server.post('/api/cohorts', (req, res) => {
+    db('cohorts')
+        .insert(req.body, 'id')
+        .then(cohort => {
+            res.status(200).json({ cohort, message: "The cohort successfully added!" })
+        })
+        .catch(err => {
+            res.status(500).json({ err, message: "There was an error while adding the cohort." })
+        });
+});
 
 module.exports = server;
