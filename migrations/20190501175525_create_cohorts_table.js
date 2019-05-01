@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
     return knex.schema.createTable('cohorts', tbl => {
         tbl.increments();
 
-        tbl.string('name', 255).notNullable();
+        tbl.text('name', 255).notNullable();
 
         tbl.timestamps(true, true);
     });
